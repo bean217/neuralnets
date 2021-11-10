@@ -15,6 +15,7 @@ class Network(object):
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
         self.weights = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]
 
+
     # Feed forward method for network
     # Calculates the output of the network iteratively
     # @param: a is the input to the network
@@ -23,6 +24,7 @@ class Network(object):
         for b, w in zip(self.biases, self.weights):
             a = sigmoid(np.dot(w, a) + b)
         return a
+
 
     def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
         n = len(training_data)
@@ -38,6 +40,21 @@ class Network(object):
                 print(f"Epoch {j}: {self.evaluate(test_data)} / {n_test}")
             else:
                 print(f"Epoch {j} complete")
+
+
+    # Update's the network's weights and biases by applying gradient
+    #   descent using backpropagation to a single mini batch
+    def update_mini_batch(self, mini_batch, eta):
+        nabla_b = [np.zeros(b.shape) for b in self.biases]
+        nabla_w = [np.zeros(w.shape) for w in self.weights]
+        for x, y in mini_batch:
+            delta_nabla_b, delta_nabla_w = self.backprop(x, y)
+            nabla_b = [nb + dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
+            nabla_w = [nw + dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
+        self.weights = [w - (eta / len(mini_batch)) * nw
+                        for w, nw in zip(self.weights, nabla_w)]
+        self.biases = [b - (eta / len(mini_batch)) * nb
+                        for b, nb in zip(self.biases, nabla_b)]
 
 
 # Sigmoid function for calculating a neuron's output
