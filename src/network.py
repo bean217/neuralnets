@@ -1,5 +1,8 @@
-import numpy as np
+### Standard Libraries
 import random
+
+### Third-Party Libraries
+import numpy as np
 
 class Network(object):
 
@@ -23,16 +26,16 @@ class Network(object):
 
     def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
         n = len(training_data)
-        for j in xrange(epochs):
+        for j in range(epochs):
             random.shuffle(training_data)
             mini_batches = [
                 training_data[k:k+mini_batch_size]
-                for k in xrange(0, n, mini_batch_size)]
+                for k in range(0, n, mini_batch_size)]
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if test_data:
                 n_test = len(test_data)
-                print(f"Epoch {self.evaluate(test_data)} / {n_test}")
+                print(f"Epoch {j}: {self.evaluate(test_data)} / {n_test}")
             else:
                 print(f"Epoch {j} complete")
 
